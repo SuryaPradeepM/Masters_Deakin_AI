@@ -1,0 +1,11 @@
+https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+
+https://docs.scipy.org/doc/scipy/reference/spatial.distance.html
+
+https://scikit-learn.org/stable/modules/tree.html#decision-trees
+
+https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier
+
+https://scikit-learn.org/stable/auto_examples/tree/plot_cost_complexity_pruning.html
+
+https://scikit-learn.org/stable/modules/grid_search.html

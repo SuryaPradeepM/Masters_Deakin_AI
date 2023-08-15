@@ -1,0 +1,17 @@
+https://plotly.com/graphing-libraries/
+
+https://towardsdatascience.com/linear-regression-on-boston-housing-dataset-f409b7e4a155
+
+https://towardsdatascience.com/why-exclude-highly-correlated-features-when-building-regression-model-34d77a90ea8e
+
+https://statisticsbyjim.com/regression/multicollinearity-in-regression-analysis/
+
+https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html
+
+https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
+
+https://scikit-learn.org/stable/modules/svm.html#svc
+
+https://towardsdatascience.com/why-you-are-using-t-sne-wrong-502412aab0c0
+
+(Agarwal, 2018; Folkman, 2020; Frost, 2017; plotly.com, n.d.; scikit-learn developers, 2014; scikit-learn, n.d.; scikit-learn.org, n.d.; Srinivasan, 2019)

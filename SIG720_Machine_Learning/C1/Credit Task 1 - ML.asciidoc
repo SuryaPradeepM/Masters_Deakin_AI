@@ -1,0 +1,1034 @@
+== SIG720 - Machine Learning
+
+=== Task C1 (Credit Task 1)
+
+== Submitted by:
+
+== *Surya Pradeep Kumar Varma*
+
+== Deakin ID - *223020011*
+
+== Attempt # *1*
+
+== Email Address - suryapradeepv@gmail.com
+
+== Index
+
+link:#i.-Load-the-Data[i. Load the Data]
+link:#1.-Subgroups-according-to-columns-3-to-205[1. Subgroups according
+to columns 3 to 205] link:#2.-Curse-of-Dimensionality-problem[2. Curse
+of dimensionality problem]
+link:#3.-Computation-of-Variance-Explained-by-the-Principal-Componentss[3.
+Computation of Variance Explained by Principal Components]
+link:#4.-ML-Modelling[4. ML Modelling (obesity data)]
+link:#References[References]
+
+== i. Load the Data
+
+
+----
+[cols=",,,,,,,,,,,,,,,,,,,,,",options="header",]
+|===
+| |Gender |Age |d 5100-0 |d 5100-1 |d 5100-2 |d 5100-3 |d 5100-4 |d
+5100-8 |d 5100-9 |d 5101-0 |... |d 57022-8 |d 57022-9 |d 571-0 |d 571-1
+|d 571-2 |d 571-3 |d 571-4 |d 571-8 |d 571-9 |Classes
+|0 |0 |18 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |1 |0 |0
+|class6
+
+|1 |0 |22 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |0 |1 |0 |0 |0
+|class6
+
+|2 |0 |18 |0 |0 |0 |1 |0 |0 |0 |0 |... |0 |0 |0 |0 |0 |1 |0 |0 |0
+|class6
+
+|3 |1 |18 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |1 |0 |0 |0 |0
+|class6
+
+|4 |0 |19 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |1 |0 |0 |0 |0
+|class6
+
+|5 |0 |18 |0 |1 |0 |0 |0 |0 |0 |0 |... |0 |0 |1 |0 |0 |0 |0 |0 |0
+|class2
+
+|6 |0 |15 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |1 |0 |0
+|class6
+|===
+
+7 rows × 206 columns
+----
+
+
+----(70, 206)----
+
+____
+We have a large number of dimensions w.r.t data points, just 70 rows and
+205 different features and one target class. This is the problem of
+*curse of dimensionality*. We have to address this by performing
+dimensionality reduction later.
+____
+
+
+----
+[cols=",,,,,,,,,,,,,,,,,,,,,",options="header",]
+|===
+| |Gender |Age |d 5100-0 |d 5100-1 |d 5100-2 |d 5100-3 |d 5100-4 |d
+5100-8 |d 5100-9 |d 5101-0 |... |d 57022-4 |d 57022-8 |d 57022-9 |d
+571-0 |d 571-1 |d 571-2 |d 571-3 |d 571-4 |d 571-8 |d 571-9
+|count |70.000000 |70.000000 |70.000000 |70.000000 |70.000000 |70.000000
+|70.000000 |70.0 |70.0 |70.0 |... |70.000000 |70.0 |70.0 |70.000000
+|70.000000 |70.000000 |70.000000 |70.000000 |70.0 |70.0
+
+|mean |0.414286 |12.257143 |0.071429 |0.142857 |0.271429 |0.171429
+|0.342857 |0.0 |0.0 |0.0 |... |0.014286 |0.0 |0.0 |0.114286 |0.328571
+|0.314286 |0.157143 |0.085714 |0.0 |0.0
+
+|std |0.496155 |3.626336 |0.259399 |0.352454 |0.447907 |0.379604
+|0.478091 |0.0 |0.0 |0.0 |... |0.119523 |0.0 |0.0 |0.320455 |0.473085
+|0.467583 |0.366563 |0.281963 |0.0 |0.0
+
+|min |0.000000 |6.000000 |0.000000 |0.000000 |0.000000 |0.000000
+|0.000000 |0.0 |0.0 |0.0 |... |0.000000 |0.0 |0.0 |0.000000 |0.000000
+|0.000000 |0.000000 |0.000000 |0.0 |0.0
+
+|25% |0.000000 |9.000000 |0.000000 |0.000000 |0.000000 |0.000000
+|0.000000 |0.0 |0.0 |0.0 |... |0.000000 |0.0 |0.0 |0.000000 |0.000000
+|0.000000 |0.000000 |0.000000 |0.0 |0.0
+
+|50% |0.000000 |12.000000 |0.000000 |0.000000 |0.000000 |0.000000
+|0.000000 |0.0 |0.0 |0.0 |... |0.000000 |0.0 |0.0 |0.000000 |0.000000
+|0.000000 |0.000000 |0.000000 |0.0 |0.0
+
+|75% |1.000000 |15.000000 |0.000000 |0.000000 |1.000000 |0.000000
+|1.000000 |0.0 |0.0 |0.0 |... |0.000000 |0.0 |0.0 |0.000000 |1.000000
+|1.000000 |0.000000 |0.000000 |0.0 |0.0
+
+|max |1.000000 |22.000000 |1.000000 |1.000000 |1.000000 |1.000000
+|1.000000 |0.0 |0.0 |0.0 |... |1.000000 |0.0 |0.0 |1.000000 |1.000000
+|1.000000 |1.000000 |1.000000 |0.0 |0.0
+|===
+
+8 rows × 205 columns
+----
+
+
+----Index([], dtype='object')----
+
+
+----Classes
+class6    29
+class7    16
+class4    12
+class2     7
+class5     3
+class1     2
+class3     1
+Name: count, dtype: int64----
+
+
+----(array(['class6', 'class2', 'class4', 'class7', 'class1', 'class5',
+        'class3'], dtype=object),
+ 7)----
+
+____
+*Classes are imbalanced; There are 7 different groups with a imbalanced
+dataset*
+____
+
+
+----0    class6
+1    class6
+2    class6
+3    class6
+4    class6
+5    class2
+6    class6
+Name: Classes, dtype: object----
+
+
+----
+[cols=",,,,,,,,,,,,,,,,,,,,,",options="header",]
+|===
+| |Gender |Age |d 5100-0 |d 5100-1 |d 5100-2 |d 5100-3 |d 5100-4 |d
+5100-8 |d 5100-9 |d 5101-0 |... |d 57022-4 |d 57022-8 |d 57022-9 |d
+571-0 |d 571-1 |d 571-2 |d 571-3 |d 571-4 |d 571-8 |d 571-9
+|0 |0 |18 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |0 |1 |0 |0
+
+|1 |0 |22 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |1 |0 |0 |0
+
+|2 |0 |18 |0 |0 |0 |1 |0 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |1 |0 |0 |0
+
+|3 |1 |18 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |0 |1 |0 |0 |0 |0
+
+|4 |0 |19 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |0 |1 |0 |0 |0 |0
+
+|5 |0 |18 |0 |1 |0 |0 |0 |0 |0 |0 |... |0 |0 |0 |1 |0 |0 |0 |0 |0 |0
+
+|6 |0 |15 |0 |0 |0 |0 |1 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |0 |1 |0 |0
+|===
+
+7 rows × 205 columns
+----
+
+== 1. Subgroups according to columns 3 to 205
+
+
+----
+[cols=",,,,,,,,,,,,,,,,,,,,,",options="header",]
+|===
+| |d 5100-0 |d 5100-1 |d 5100-2 |d 5100-3 |d 5100-4 |d 5100-8 |d 5100-9
+|d 5101-0 |d 5101-1 |d 5101-2 |... |d 57022-4 |d 57022-8 |d 57022-9 |d
+571-0 |d 571-1 |d 571-2 |d 571-3 |d 571-4 |d 571-8 |d 571-9
+|0 |0 |0 |0 |0 |1 |0 |0 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |0 |1 |0 |0
+
+|1 |0 |0 |0 |0 |1 |0 |0 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |1 |0 |0 |0
+
+|2 |0 |0 |0 |1 |0 |0 |0 |0 |0 |0 |... |0 |0 |0 |0 |0 |0 |1 |0 |0 |0
+|===
+
+3 rows × 203 columns
+----
+
+== Subgroups using no. of unique values in selected columns
+
+
+----343----
+
+____
+We can see that there are 343 different subgroups when considering 3 to
+205 columns. And we have seen that from the 206the attribute. We only
+have 7 unique classes in the labels
+____
+
+== Also trying grouping with kmeans clustering instead of direct subgroups
+
+Refer for yellowbrick docs:
+https://www.scikit-yb.org/en/latest/api/cluster/silhouette.html?highlight=silhouette
+
+
+----
+For n_clusters 2, The average silhouette_score is: 0.22910
+For n_clusters 3, The average silhouette_score is: 0.26013
+For n_clusters 4, The average silhouette_score is: 0.26920
+For n_clusters 5, The average silhouette_score is: 0.28200
+For n_clusters 6, The average silhouette_score is: 0.26198
+For n_clusters 7, The average silhouette_score is: 0.18344
+For n_clusters 8, The average silhouette_score is: 0.18612
+----
+
+____
+*The value of Silhouette score varies from -1 to 1. If the score is 1,
+the cluster is dense and well-separated than other clusters. A value
+near 0 represents overlapping clusters with samples very close to the
+decision boundary of the neighbouring clusters. A negative score [-1, 0]
+indicate that the samples might have got assigned to the wrong
+clusters.*
+____
+
+Checking from the silhouette coefficient value is best for 5 clusters
+indicating relatively well-seperated clusters with least number of
+clusters. Next we can check in the silhouette plots to determine optimum
+number of clusters
+
+
+----
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_27_0.png)
+
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_27_1.png)
+
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_27_2.png)
+
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_27_3.png)
+
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_27_4.png)
+
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_27_5.png)
+
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_27_6.png)
+----
+
+== Optimal number of clusters:
+
+* *3* seems to be suboptimal as:
+** Thicknes of clusters or number of values in clusters varies with some
+thicker and other thinner clusters
+** One cluster has score lesser than average
+* *4* also seems to suboptimal as:
+** Thicknes of clusters or number of values in clusters varies with some
+thicker and other thinner clusters
+* *5* has the best avg. score:
+** Although it has the best avg. score, there are negative values in
+some clusters
+** But the thickness of clusters varies widely. One cluster is very
+thick
+* *7* has a much lower avg. silhouette score
+* Hence *6* is the optimal number of clusters:
+** Good avg. silhouette score
+** Thickness is comparitively better
+
+
+----
+For n_clusters 6, 
+The average silhouette score: 0.26872377
+purity_score: 0.82857143
+----
+
+____
+*We can see that for the 6 number of clusters, we have good silhouette
+score and purity_score*
+____
+
+____
+*This is not exactly same as the seven number of classes that is present
+in the gt. This is because the separation of some of the classes in the
+gt might not be too well because, we have too few data points in few
+classes. Also, overall there are very less number of data points to be
+able to infer a meaningful pattern out of them. Along with a curse of
+dimensionality problem.*
+____
+
+== 2. Curse of Dimensionality problem
+
+== The term ``Curse of Dimensionality'' refers to the explosive nature of increasing data dimensions and the subsequent exponential increase in computer work required for processing and/or analysis. Richard E. Bellman coined the term to describe the increase in volume of Euclidean space associated with adding extra dimensions in the field of dynamic programming. This phenomena is now being observed in domains such as machine learning, data analysis, and data mining, to mention a few. In principle, increasing the dimensions adds more information to the data, boosting its quality, but it actually increases noise and redundancy during analysis.
+
+== A feature of an item in machine learning might be an attribute or a characteristic that defines it. Each characteristic represents a dimension, and a collection of dimensions forms a data point. This is a feature vector that defines the data point that will be used by a machine learning algorithm (or algorithms). When we talk about increasing dimensionality, we mean increasing the amount of characteristics utilised to describe the data. In the realm of breast cancer research, for example, age and the number of malignant nodes can be used as features to determine a patient’s prognosis. A feature vector’s dimensions are made up of these features. However, other factors such as previous surgeries, patient history, tumour kind, and other such characteristics assist a doctor in making a diagnosis are adding dimensions to data
+
+== Hughes (1968) in his study concluded that with a fixed number of training samples, the predictive power of any classifier first increases as the number of dimensions increase, but after a certain value of number of dimensions, the performance deteriorates. Thus, the phenomenon of curse of dimensionality is also known as Hughes phenomenon.
+
+image::attachment:19eb1c61-7ec7-484a-b873-dacfb1d1902d.png[image.png]
+
+== A range of approaches known as `Dimensionality reduction techniques' are employed to alleviate the issues associated with high dimensional data. Dimensionality reduction approaches are classified into two types: ``feature selection'' and ``feature extraction.''
+
+=== *Feature Selection:* Low Variane Filter, High Correlation Filter, Multicollinearity, Feature Ranking
+
+=== *Feature Ranking:* PCA, Factor Analysis, Independent component analysis, t-SNE
+
+== i. Normalizing data
+
+Normalizing before PCA is very important
+
+
+----(70, 205)----
+
+== ii. PCA
+
+
+----(70, 205)----
+
+
+----
+array([1.86694858e-01, 1.38438258e-01, 9.17579162e-02, 5.52091418e-02,
+       4.71110286e-02, 4.33741972e-02, 3.65885762e-02, 3.10070955e-02,
+       2.90364928e-02, 2.77491608e-02, 2.52250448e-02, 2.35961441e-02,
+       2.18405625e-02, 1.97756859e-02, 1.71228645e-02, 1.70162514e-02,
+       1.49171694e-02, 1.35681215e-02, 1.29999914e-02, 1.22299499e-02,
+       1.19545610e-02, 9.60702809e-03, 9.30895071e-03, 7.98404089e-03,
+       7.49014950e-03, 7.24567242e-03, 6.78822094e-03, 6.24763870e-03,
+       6.05267818e-03, 5.58696452e-03, 5.04593880e-03, 4.70094414e-03,
+       4.53654675e-03, 4.21438782e-03, 3.70300736e-03, 3.51119815e-03,
+       3.25861551e-03, 3.12107763e-03, 2.64774985e-03, 2.28096343e-03,
+       2.02247631e-03, 1.92829870e-03, 1.88342933e-03, 1.83591703e-03,
+       1.66520127e-03, 1.55167966e-03, 1.14841645e-03, 1.00779557e-03,
+       9.32224131e-04, 8.58188785e-04, 7.21345128e-04, 6.68171882e-04,
+       5.53046360e-04, 4.50822243e-04, 4.19943711e-04, 3.66307745e-04,
+       3.26331690e-04, 2.41699972e-04, 2.00270246e-04, 1.79277309e-04,
+       1.47031673e-04, 1.20733920e-04, 9.04877946e-05, 6.23397354e-05,
+       3.73869431e-05, 1.99958534e-05, 1.07442473e-05, 4.65330372e-06,
+       9.37864262e-07, 1.64163809e-33])
+----
+
+
+----
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_46_0.png)
+----
+
+____
+This plot shows the cumulative percentage of variance explaiend by each
+additional principal component. We can see that arund 15 principal
+components are enough to account for approx. 82% of the variance. Also,
+around 23 principal components explain 90% of the variance and 30
+principal components are able to explain a total of 95% of variance of
+the data. This means, after doing dimensionality reduction with *PCA*
+we’re able to effectively use just 30 principal components instead of
+the original 70 dimensions
+____
+
+____
+*This shows that we indeed have a curse of dimensionality problem where
+having additional features doesn’t add to the predictive power of the
+overall model considering those additional features*
+____
+
+== iii. t-SNE
+
+
+----
+NO. of components 2 | KL Divergence 0.09370
+----
+
+== iv. Visualize in 2D plot to check for dimensionality and loss of information
+
+____
+To illustrate the problem, let’s consider a two-dimensional plot. Since
+the dataset has 203 dimensions, we cannot directly visualize it in a
+traditional scatter plot.
+___
+
+___
+However, we can apply dimensionality reduction techniques like PCA and
+t-SNE to project the dataset onto a lower-dimensional space, such as a
+2D space. By applying PCA and t-SNE, we can transform the dataset into a
+reduced number of components while preserving the most important
+information. Then, We can then plot the data in this reduced 2D space.
+____
+
+
+----
+
+
+[[e1e36ead-67d0-4ede-807a-17fe61bc1237]]
+
+[[adf62ee7-c28f-4f15-8a7f-f0207e1bf723]]
+----
+
+____
+*We can see that the clusters are indeed clearly separated when
+visualized using just two components of PCA and t-SNE. Thus confirming
+the presence of curse of dimensionality problem.*
+___
+
+___
+The loss of information can be measured by comparing the explained
+variance ratio of the original data with that of the reduced data (in
+2D). The reduction in the explained variance indicates the loss of
+information due to dimensionality reduction
+___
+
+___
+It’s important to note that such a plot will only capture a subset of
+the information present in the original high-dimensional dataset,
+resulting in a loss of information.
+____
+
+== 3. Computation of Variance Explained by the Principal Components
+
+=== The percentage of variance for the first N components in PCA is computed based on the eigenvalues of the covariance matrix. Steps:
+
+____
+[arabic]
+. Compute the covariance matrix of the original dataset
+. Perform an eigendecomposition (SVD) of the covariance matrix, which
+yields eigenvalues and eigenvectors.
+. Sort the eigenvalues in descendi and valculate the total sum of all
+eigenvalues.
+. Compute the cumulative sum of the eigenvalues up to the Nth component.
+. After getting the principal components, to compute the percentage of
+variance (information) accounted for by each component, we divide the
+eigenvalue of each component by the sum of eigenvalues. Percentage of
+Variance: The percentage of variance explained by each principal
+component is calculated by dividing its eigenvalue by the sum o **The
+percentage of variance explained by the first N components indicates how
+much information is retained when reducing the dataset
+dimensionality.**f all eigenvalues.
+___
+
+___
+*Percentage of Variance Explained by PCi = (Eigenvalue of PCi) / (Sum of
+all Eigenvalues)*
+___
+
+___
+Cumulative Variance: Often, we are interested in the cumulative variance
+explained by a subset of principal components. This is useful to
+determine how much information is retained when using a certain number
+of principal components. The cumulative variance for the first k
+principal components is obtained by summing the percentage of variance
+explained by those components.
+___
+
+___
+*Cumulative Variance (N) (X%) = Sum of the Percentage of VariaNce for
+the first N principal components*
+___
+
+___
+By analyzing the percentage of variance explained by each principal
+component, one can *make an informed decision about how many principal
+components to retain for dimens. Higher percentages indicates that a
+larger proportion of the original dataset’s variance is captured by the
+reduced components.ioality reduction*. Typically, a cumulative variance
+of around 95% or higher is considered a good choice, as it retains most
+of the information from the original data while reducing the dimensions
+____
+
+== 4. ML Modelling
+
+== Dataset description: This dataset includes data for the estimation of obesity levels in individuals based on their eating habits and physical condition. The data contains 17 attributes and 2111 records.
+
+== Features and labels: The attribute names are listed below. The description of the attributes can be found in this article:
+
+!https://www.sciencedirect.com/science/article/pii/S2352340919306985[web
+link]
+
+
+----(2111, 17)----
+
+
+----
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 2111 entries, 0 to 2110
+Data columns (total 17 columns):
+ #   Column                          Non-Null Count  Dtype  
+---  ------                          --------------  -----  
+ 0   Gender                          2111 non-null   object 
+ 1   Age                             2111 non-null   float64
+ 2   Height                          2111 non-null   float64
+ 3   Weight                          2111 non-null   float64
+ 4   family_history_with_overweight  2111 non-null   object 
+ 5   FAVC                            2111 non-null   object 
+ 6   FCVC                            2111 non-null   float64
+ 7   NCP                             2111 non-null   float64
+ 8   CAEC                            2111 non-null   object 
+ 9   SMOKE                           2111 non-null   object 
+ 10  CH2O                            2111 non-null   float64
+ 11  SCC                             2111 non-null   object 
+ 12  FAF                             2111 non-null   float64
+ 13  TUE                             2111 non-null   float64
+ 14  CALC                            2111 non-null   object 
+ 15  MTRANS                          2111 non-null   object 
+ 16  NObeyesdad                      2111 non-null   object 
+dtypes: float64(8), object(9)
+memory usage: 280.5+ KB
+----
+
+
+----
+[cols=",,,,,,,,,,,,,,,,,",options="header",]
+|===
+| |Gender |Age |Height |Weight |family_history_with_overweight |FAVC
+|FCVC |NCP |CAEC |SMOKE |CH2O |SCC |FAF |TUE |CALC |MTRANS |NObeyesdad
+|0 |Female |21.0 |1.62 |64.0 |yes |no |2.0 |3.0 |Sometimes |no |2.0 |no
+|0.0 |1.0 |no |Public_Transportation |Normal_Weight
+
+|1 |Female |21.0 |1.52 |56.0 |yes |no |3.0 |3.0 |Sometimes |yes |3.0
+|yes |3.0 |0.0 |Sometimes |Public_Transportation |Normal_Weight
+
+|2 |Male |23.0 |1.80 |77.0 |yes |no |2.0 |3.0 |Sometimes |no |2.0 |no
+|2.0 |1.0 |Frequently |Public_Transportation |Normal_Weight
+
+|3 |Male |27.0 |1.80 |87.0 |no |no |3.0 |3.0 |Sometimes |no |2.0 |no
+|2.0 |0.0 |Frequently |Walking |Overweight_Level_I
+
+|4 |Male |22.0 |1.78 |89.8 |no |no |2.0 |1.0 |Sometimes |no |2.0 |no
+|0.0 |0.0 |Sometimes |Public_Transportation |Overweight_Level_II
+|===
+----
+
+
+----Index(['Gender', 'Age', 'Height', 'Weight', 'family_history_with_overweight',
+       'FAVC', 'FCVC', 'NCP', 'CAEC', 'SMOKE', 'CH2O', 'SCC', 'FAF', 'TUE',
+       'CALC', 'MTRANS', 'NObeyesdad'],
+      dtype='object')----
+
+
+----0             Normal_Weight
+1             Normal_Weight
+2             Normal_Weight
+3        Overweight_Level_I
+4       Overweight_Level_II
+               ...         
+2106       Obesity_Type_III
+2107       Obesity_Type_III
+2108       Obesity_Type_III
+2109       Obesity_Type_III
+2110       Obesity_Type_III
+Name: NObeyesdad, Length: 2111, dtype: object----
+
+
+----(2111, 16)----
+
+
+----((2111, 15), (2111,))----
+
+== i. Check target distribution
+
+
+----1999    133.644711
+90       93.000000
+1299     88.126544
+189      62.000000
+743      53.783977
+86       83.000000
+279      52.000000
+129      78.000000
+202     102.000000
+1659    121.658729
+Name: Weight, dtype: float64----
+
+
+----
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_67_0.png)
+----
+
+
+----
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_68_0.png)
+----
+
+____
+It seems to have a bimodal normal distribution for the weight. There do
+not seem to be many outliers present as well
+____
+
+== ii. Pairplot
+
+
+----<seaborn.axisgrid.PairGrid at 0x2584a9df7c0>
+![png](Credit%20Task%201%20-%20ML_files/Credit%20Task%201%20-%20ML_71_1.png)
+----
+
+____
+From the plto: Age, Height, Weight seem to be normally distributed. We
+can’t directly infer heavy correlation between the scatter plots except
+between Height and Weight which is expected.
+____
+
+== iii. Data Wrangling (features)
+
+
+----(2111, 15)----
+
+
+----
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 2111 entries, 0 to 2110
+Data columns (total 15 columns):
+ #   Column                          Non-Null Count  Dtype  
+---  ------                          --------------  -----  
+ 0   Gender                          2111 non-null   object 
+ 1   Age                             2111 non-null   float64
+ 2   Height                          2111 non-null   float64
+ 3   family_history_with_overweight  2111 non-null   object 
+ 4   FAVC                            2111 non-null   object 
+ 5   FCVC                            2111 non-null   float64
+ 6   NCP                             2111 non-null   float64
+ 7   CAEC                            2111 non-null   object 
+ 8   SMOKE                           2111 non-null   object 
+ 9   CH2O                            2111 non-null   float64
+ 10  SCC                             2111 non-null   object 
+ 11  FAF                             2111 non-null   float64
+ 12  TUE                             2111 non-null   float64
+ 13  CALC                            2111 non-null   object 
+ 14  MTRANS                          2111 non-null   object 
+dtypes: float64(7), object(8)
+memory usage: 247.5+ KB
+----
+
+
+----
+[cols=",,,,",options="header",]
+|===
+| |413 |409 |356 |1079
+|Gender |Male |Female |Male |Male
+
+|Age |33.0 |33.0 |17.0 |24.751511
+
+|Height |1.75 |1.55 |1.9 |1.735343
+
+|family_history_with_overweight |no |yes |no |yes
+
+|FAVC |no |yes |no |yes
+
+|FCVC |2.0 |3.0 |3.0 |2.607335
+
+|NCP |3.0 |1.0 |3.0 |3.0
+
+|CAEC |Sometimes |Sometimes |Sometimes |Sometimes
+
+|SMOKE |no |no |no |no
+
+|CH2O |2.0 |3.0 |2.0 |2.0
+
+|SCC |yes |no |no |no
+
+|FAF |1.0 |2.0 |3.0 |0.451009
+
+|TUE |0.0 |1.0 |1.0 |0.630866
+
+|CALC |Sometimes |Sometimes |no |Sometimes
+
+|MTRANS |Public_Transportation |Public_Transportation |Walking
+|Public_Transportation
+|===
+----
+
+
+----
+[cols=",,,,,,,",options="header",]
+|===
+| |Age |Height |FCVC |NCP |CH2O |FAF |TUE
+|0 |21.000000 |1.620000 |2.0 |3.0 |2.000000 |0.000000 |1.000000
+|1 |21.000000 |1.520000 |3.0 |3.0 |3.000000 |3.000000 |0.000000
+|2 |23.000000 |1.800000 |2.0 |3.0 |2.000000 |2.000000 |1.000000
+|3 |27.000000 |1.800000 |3.0 |3.0 |2.000000 |2.000000 |0.000000
+|4 |22.000000 |1.780000 |2.0 |1.0 |2.000000 |0.000000 |0.000000
+|... |... |... |... |... |... |... |...
+|2106 |20.976842 |1.710730 |3.0 |3.0 |1.728139 |1.676269 |0.906247
+|2107 |21.982942 |1.748584 |3.0 |3.0 |2.005130 |1.341390 |0.599270
+|2108 |22.524036 |1.752206 |3.0 |3.0 |2.054193 |1.414209 |0.646288
+|2109 |24.361936 |1.739450 |3.0 |3.0 |2.852339 |1.139107 |0.586035
+|2110 |23.664709 |1.738836 |3.0 |3.0 |2.863513 |1.026452 |0.714137
+|===
+
+2111 rows × 7 columns
+----
+
+
+----
+[cols=",,,,,,,",options="header",]
+|===
+| |Age |Height |FCVC |NCP |CH2O |FAF |TUE
+|count |2111.000000 |2111.000000 |2111.000000 |2111.000000 |2111.000000
+|2111.000000 |2111.000000
+
+|mean |24.312600 |1.701677 |2.419043 |2.685628 |2.008011 |1.010298
+|0.657866
+
+|std |6.345968 |0.093305 |0.533927 |0.778039 |0.612953 |0.850592
+|0.608927
+
+|min |14.000000 |1.450000 |1.000000 |1.000000 |1.000000 |0.000000
+|0.000000
+
+|25% |19.947192 |1.630000 |2.000000 |2.658738 |1.584812 |0.124505
+|0.000000
+
+|50% |22.777890 |1.700499 |2.385502 |3.000000 |2.000000 |1.000000
+|0.625350
+
+|75% |26.000000 |1.768464 |3.000000 |3.000000 |2.477420 |1.666678
+|1.000000
+
+|max |61.000000 |1.980000 |3.000000 |4.000000 |3.000000 |3.000000
+|2.000000
+|===
+----
+
+____
+Mean and median of the numeric columns are near to each other
+____
+
+
+----
+[cols=",,,,,,,,",options="header",]
+|===
+| |Gender |family_history_with_overweight |FAVC |CAEC |SMOKE |SCC |CALC
+|MTRANS
+|0 |Female |yes |no |Sometimes |no |no |no |Public_Transportation
+
+|1 |Female |yes |no |Sometimes |yes |yes |Sometimes
+|Public_Transportation
+
+|2 |Male |yes |no |Sometimes |no |no |Frequently |Public_Transportation
+
+|3 |Male |no |no |Sometimes |no |no |Frequently |Walking
+
+|4 |Male |no |no |Sometimes |no |no |Sometimes |Public_Transportation
+
+|... |... |... |... |... |... |... |... |...
+
+|2106 |Female |yes |yes |Sometimes |no |no |Sometimes
+|Public_Transportation
+
+|2107 |Female |yes |yes |Sometimes |no |no |Sometimes
+|Public_Transportation
+
+|2108 |Female |yes |yes |Sometimes |no |no |Sometimes
+|Public_Transportation
+
+|2109 |Female |yes |yes |Sometimes |no |no |Sometimes
+|Public_Transportation
+
+|2110 |Female |yes |yes |Sometimes |no |no |Sometimes
+|Public_Transportation
+|===
+
+2111 rows × 8 columns
+----
+
+
+----
+Gender
+Male      1068
+Female    1043
+Name: count, dtype: int64
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+family_history_with_overweight
+yes    1726
+no      385
+Name: count, dtype: int64
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FAVC
+yes    1866
+no      245
+Name: count, dtype: int64
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+CAEC
+Sometimes     1765
+Frequently     242
+Always          53
+no              51
+Name: count, dtype: int64
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SMOKE
+no     2067
+yes      44
+Name: count, dtype: int64
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SCC
+no     2015
+yes      96
+Name: count, dtype: int64
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+CALC
+Sometimes     1401
+no             639
+Frequently      70
+Always           1
+Name: count, dtype: int64
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MTRANS
+Public_Transportation    1580
+Automobile                457
+Walking                    56
+Motorbike                  11
+Bike                        7
+Name: count, dtype: int64
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----
+
+____
+These all seem to be textual, but they are actually just categorical
+columns, so we can encode them by one-hot encoding or label encoder.
+There is also an inherent imabalance in all other columns excluding
+gender.
+____
+
+
+----
+[cols=",,,,",options="header",]
+|===
+| |0 |1 |2 |3
+|Gender |Female |Female |Male |Male
+
+|Age |21.0 |21.0 |23.0 |27.0
+
+|Height |1.62 |1.52 |1.8 |1.8
+
+|family_history_with_overweight |yes |yes |yes |no
+
+|FAVC |no |no |no |no
+
+|FCVC |2.0 |3.0 |2.0 |3.0
+
+|NCP |3.0 |3.0 |3.0 |3.0
+
+|CAEC |Sometimes |Sometimes |Sometimes |Sometimes
+
+|SMOKE |no |yes |no |no
+
+|CH2O |2.0 |3.0 |2.0 |2.0
+
+|SCC |no |yes |no |no
+
+|FAF |0.0 |3.0 |2.0 |2.0
+
+|TUE |1.0 |0.0 |1.0 |0.0
+
+|CALC |no |Sometimes |Frequently |Frequently
+
+|MTRANS |Public_Transportation |Public_Transportation
+|Public_Transportation |Walking
+|===
+----
+
+
+----
+[cols=",,,,",options="header",]
+|===
+| |0 |1 |2 |3
+|Gender |0.00 |0.00 |1.0 |1.0
+|Age |21.00 |21.00 |23.0 |27.0
+|Height |1.62 |1.52 |1.8 |1.8
+|family_history_with_overweight |1.00 |1.00 |1.0 |0.0
+|FAVC |0.00 |0.00 |0.0 |0.0
+|FCVC |2.00 |3.00 |2.0 |3.0
+|NCP |3.00 |3.00 |3.0 |3.0
+|CAEC |2.00 |2.00 |2.0 |2.0
+|SMOKE |0.00 |1.00 |0.0 |0.0
+|CH2O |2.00 |3.00 |2.0 |2.0
+|SCC |0.00 |1.00 |0.0 |0.0
+|FAF |0.00 |3.00 |2.0 |2.0
+|TUE |1.00 |0.00 |1.0 |0.0
+|CALC |3.00 |2.00 |1.0 |1.0
+|MTRANS |3.00 |3.00 |3.0 |4.0
+|===
+----
+
+
+----
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 2111 entries, 0 to 2110
+Data columns (total 15 columns):
+ #   Column                          Non-Null Count  Dtype  
+---  ------                          --------------  -----  
+ 0   Gender                          2111 non-null   int32  
+ 1   Age                             2111 non-null   float64
+ 2   Height                          2111 non-null   float64
+ 3   family_history_with_overweight  2111 non-null   int32  
+ 4   FAVC                            2111 non-null   int32  
+ 5   FCVC                            2111 non-null   float64
+ 6   NCP                             2111 non-null   float64
+ 7   CAEC                            2111 non-null   int32  
+ 8   SMOKE                           2111 non-null   int32  
+ 9   CH2O                            2111 non-null   float64
+ 10  SCC                             2111 non-null   int32  
+ 11  FAF                             2111 non-null   float64
+ 12  TUE                             2111 non-null   float64
+ 13  CALC                            2111 non-null   int32  
+ 14  MTRANS                          2111 non-null   int32  
+dtypes: float64(7), int32(8)
+memory usage: 181.5 KB
+----
+
+
+----Gender                            0
+Age                               0
+Height                            0
+family_history_with_overweight    0
+FAVC                              0
+FCVC                              0
+NCP                               0
+CAEC                              0
+SMOKE                             0
+CH2O                              0
+SCC                               0
+FAF                               0
+TUE                               0
+CALC                              0
+MTRANS                            0
+dtype: int64----
+
+== iv. Modelling
+
+
+----((1583, 15), (528, 15), (1583,), (528,))----
+
+== a. Linear Regression
+
+
+----{'copy_X': True, 'fit_intercept': True, 'n_jobs': None, 'positive': False}----
+
+
+----
+Best Hyperparameters: {'copy_X': True, 'fit_intercept': True, 'positive': False}
+Mean Squared Error: 301.78330
+R-squared: 0.55141
+----
+
+____
+R2 value is very low and MSE error is high
+____
+
+== b. Support Vector Regression
+
+
+----{'C': 1.0,
+ 'cache_size': 200,
+ 'coef0': 0.0,
+ 'degree': 3,
+ 'epsilon': 0.1,
+ 'gamma': 'scale',
+ 'kernel': 'rbf',
+ 'max_iter': -1,
+ 'shrinking': True,
+ 'tol': 0.001,
+ 'verbose': False}----
+
+
+----
+Best Hyperparameters: {'C': 10, 'epsilon': 0.01, 'kernel': 'linear'}
+Mean Squared Error: 314.33939
+R-squared: 0.53275
+----
+
+____
+Even with a possibility of non-linear kernel, support vector regressor
+didn’t perform as well
+____
+
+== c. Random Forest Regression
+
+
+----{'bootstrap': True,
+ 'ccp_alpha': 0.0,
+ 'criterion': 'squared_error',
+ 'max_depth': None,
+ 'max_features': 1.0,
+ 'max_leaf_nodes': None,
+ 'max_samples': None,
+ 'min_impurity_decrease': 0.0,
+ 'min_samples_leaf': 1,
+ 'min_samples_split': 2,
+ 'min_weight_fraction_leaf': 0.0,
+ 'n_estimators': 100,
+ 'n_jobs': None,
+ 'oob_score': False,
+ 'random_state': 42,
+ 'verbose': 0,
+ 'warm_start': False}----
+
+
+----
+Best Hyperparameters: {'n_estimators': 1000, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt', 'max_depth': 30}
+Mean Squared Error: 75.81767
+R-squared: 0.88730
+----
+
+____
+Random forest performs much better than simple linear regression or
+support vector regression, this implies the data is not very simply
+linear. We require non-linear methods
+____
+
+
+----
+Mean Squared Error: 64.33971
+R-squared: 0.90616
+----
+
+____
+Hence, we can see the best MSE error value of `64` and a good R2 value
+of `0.9`, We can consider this model the champion model for this toy
+obesity dataset
+____
+
+== References
+
+‌[1] Silhouette Visualizer — Yellowbrick v1.5 documentation n.d.,
+www.scikit-yb.org, viewed 22 July 2023,
+https://www.scikit-yb.org/en/latest/api/cluster/silhouette.html?highlight=silhouette
+[2] scikit-learn 2019, sklearn.cluster.KMeans — scikit-learn 0.21.3
+documentation, Scikit-learn.org [3] www.datacamp.com. (n.d.). Python
+t-SNE with Matplotlib. [online] Available at:
+https://www.datacamp.com/tutorial/introduction-t-sne [4] Team, G.L.
+(2020). What is Curse of Dimensionality in Machine Learning? [online]
+GreatLearning Blog: Free Resources what Matters to shape your Career!
+Available at:
+https://www.mygreatlearning.com/blog/understanding-curse-of-dimensionality/
+[5] Karanam, S. (2021). Curse of Dimensionality — A `Curse' to Machine
+Learning. [online] Medium. Available at:
+https://towardsdatascience.com/curse-of-dimensionality-a-curse-to-machine-learning-c122ee33bfeb
+[6] SciKit-Learn (2009). 3.1. Cross-validation: evaluating estimator
+performance — scikit-learn 0.21.3 documentation. [online]
+Scikit-learn.org. Available at:
+https://scikit-learn.org/stable/modules/cross_validation.html.
